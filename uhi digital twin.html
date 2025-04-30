@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Urban Heat Island Digital Twin</title>
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.110/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style>
+    html, body, #cesiumContainer {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+
+  <script>
+    // Cesium Viewer setup
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5YjZjMmU0My02YzZhLTQwNTctOWQ3Zi0wOTdmNjJkY2U5OGYiLCJpZCI6Mjk4NjA1LCJpYXQiOjE3NDYwMTc3ODl9.zmfMCdjuKp4RpSFBEVz-SvQztqtXZJsB1dvAxhyAsBk';
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      terrainProvider: Cesium.createWorldTerrain(),
+      timeline: false,
+      animation: false
+    });
+
+    // Sensor locations (sample data for Lecce)
+    const sensorData = [
+      {
+        id: 'Sensor 1',
+        name: 'Via Università',
+        position: [18.1704, 40.3515], // Longitude, Latitude
+        temperature: 32.5,
+        humidity: 55,
+        light: 280
+      },
+      {
+        id: 'Sensor 2',
+        name: 'Piazza Sant\'Oronzo',
+        position: [18.1718, 40.3536],
+        temperature: 31.8,
+        humidity: 58,
+        light: 310
+      }
+    ];
+
+    // Add sensor points to the map
+    sensorData.forEach(sensor => {
+      viewer.entities.add({
+        id: sensor.id,
+        name: sensor.name,
+        position: Cesium.Cartesian3.fromDegrees(sensor.position[0], sensor.position[1], 10),
+        point: {
+          pixelSize: 12,
+          color: Cesium.Color.RED
+        },
+        description: `
+          <h3>${sensor.name}</h3>
+          <p><strong>Temperature:</strong> ${sensor.temperature} °C</p>
+          <p><strong>Humidity:</strong> ${sensor.humidity} %</p>
+          <p><strong>Light:</strong> ${sensor.light} Lux</p>
+        `
+      });
+    });
+
+    viewer.zoomTo(viewer.entities);
+  </script>
+</body>
+</html>
